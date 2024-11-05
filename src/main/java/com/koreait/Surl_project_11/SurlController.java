@@ -29,17 +29,46 @@ public class SurlController {
 
     @GetMapping("/s/{body}/**")
     @ResponseBody
-    public String add(
+    public Surl add(
             @PathVariable String body,
             HttpServletRequest req
     ) {
         String url = req.getRequestURI();
+
         if (req.getQueryString() != null) {
             url += "?" + req.getQueryString();
         }
+
         String[] urlBits = url.split("/", 4);
+
         System.out.println("Arrays.toString(urlBits) : " + Arrays.toString(urlBits));
+
         url = urlBits[3];
-        return url;
+
+        Surl surl = Surl.builder()
+                .id(++surlsLastId)
+                .body(body)
+                .url(url)
+                .build();
+        surls.add(surl);
+        return surl;
+    }
+
+    @GetMapping("/g/{id}")
+    public String go(
+            @PathVariable long id
+    ) {
+        Surl surl = surls.stream()
+                .filter(_surl -> _surl.getId() == id)
+                .findFirst()
+                .orElse(null);
+        if (surl == null) throw new RuntimeException("%d번 데이터를 찾을 수 없어".formatted(id));
+        surl.increaseCount();
+        return "redirect:" + surl.getUrl();
+    }
+    @GetMapping("/all")
+    @ResponseBody
+    public List<Surl> getAll() {
+        return surls;
     }
 }
