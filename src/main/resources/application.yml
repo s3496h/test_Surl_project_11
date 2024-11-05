@@ -2,4 +2,4 @@ server:
   port: 8080
 spring:
   application:
-    name: surl_project_11
+    name: TEST_Surl_project_11
