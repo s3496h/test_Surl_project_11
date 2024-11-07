@@ -1,5 +1,8 @@
 server:
-  port: 8080
+  port: 8070
 spring:
-  application:
-    name: TEST_Surl_project_11
+  profiles:
+    active: dev
+custom:
+  site:
+    name: "My Site"
