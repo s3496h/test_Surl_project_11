@@ -1,4 +1,4 @@
-package com.koreait.Surl_project_11;
+package com.koreait.Surl_project_11.domain.home.home.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

@@ -7,7 +7,9 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/surl_dev
     username: root
-    password: koreait123414
+    password:
+
+
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -23,12 +25,8 @@ custom:
     name: "My Site"
 logging:
   level:
-    com.koreait.Surl_project_11: DEBUG
-    org.hibernate.SQL: DEBUG              # SQL 쿼리 로그
-    org.hibernate.type.descriptor.sql: TRACE  # SQL 타입 변환 정보
-    org.hibernate.orm.jdbc.bind: TRACE     # 파라미터 바인딩 정보
-    org.hibernate.orm.jdbc.extract: TRACE  # 쿼리 결과 추출 정보
-    org.hibernate.engine.transaction: DEBUG # 트랜잭션 관련 로그
-    org.hibernate.event: DEBUG             # 이벤트 관련 로그
-    org.hibernate.stat: DEBUG              # Hibernate 통계 정보
-    org.hibernate.cache: TRACE             # 캐시 관련 로그
+   com.koreait.surl_project_11: DEBUG
+   org.hibernate.SQL: DEBUG
+   org.hibernate.orm.jdbc.bind: TRACE
+   org.hibernate.orm.jdbc.extract: TRACE
+   org.springframework.transaction.interceptor: TRACE

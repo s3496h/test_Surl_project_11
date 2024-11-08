@@ -1,4 +1,4 @@
-package com.koreait.Surl_project_11;
+package com.koreait.Surl_project_11.domain.surl.surl.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;
