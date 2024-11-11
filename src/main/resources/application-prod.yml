@@ -2,9 +2,9 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:postgresql://cwy-surl-project-db.internal:5432/surl_prod
+    url: jdbc:postgresql://jsh-surl-project-db.internal:5432/surl_prod
     username: postgres
-    password: WSvgSlSd9GaktDA
+    password:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
