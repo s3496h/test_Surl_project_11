@@ -1,11 +1,12 @@
 package com.koreait.Surl_project_11.domain.surl.surl.controller;
 
 import com.koreait.Surl_project_11.domain.member.entity.Member;
+import com.koreait.Surl_project_11.domain.surl.surl.dto.SurlDto;
 import com.koreait.Surl_project_11.domain.surl.surl.entity.Surl;
 import com.koreait.Surl_project_11.domain.surl.surl.service.SurlService;
 import com.koreait.Surl_project_11.grobal.eceptions.GlobalException;
 import com.koreait.Surl_project_11.grobal.rq.Rq;
-import com.koreait.Surl_project_11.grobal.rsData.RsData ;
+import com.koreait.Surl_project_11.grobal.rsData.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class ApiV1SurlController {
     @AllArgsConstructor
     @Getter
     public static class SurlAddRespBody {
-        private Surl item;
+        private SurlDto item;
     }
     @PostMapping("")
     @ResponseBody
@@ -41,13 +42,15 @@ public class ApiV1SurlController {
         Member member = rq.getMember(); // 현재 브라우저로 로그인 한 회원 정보
         RsData<Surl> addRs = surlService.add(member, reqBody.body, reqBody.url);
         return addRs.newDataOf(
-                new SurlAddRespBody(addRs.getData())
+                new SurlAddRespBody(
+                        new SurlDto(addRs.getData())
+                )
         );
     }
     @AllArgsConstructor
     @Getter
     public static class SurlGetRespBody {
-        private Surl item;
+        private SurlDto item;
     }
     // /api/v1/surls/{id}
     // /api/v1/surls/1
@@ -58,7 +61,9 @@ public class ApiV1SurlController {
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
         return RsData.of(
-                new SurlGetRespBody(surl)
+                new SurlGetRespBody(
+                        new SurlDto(surl)
+                )
         );
     }
 }

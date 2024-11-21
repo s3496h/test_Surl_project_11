@@ -1,5 +1,6 @@
 package com.koreait.Surl_project_11.domain.member.controller;
 
+import com.koreait.Surl_project_11.domain.member.dto.MemberDto;
 import com.koreait.Surl_project_11.domain.member.entity.Member;
 import com.koreait.Surl_project_11.domain.member.service.MemberService;
 import com.koreait.Surl_project_11.grobal.rsData.RsData;
@@ -35,7 +36,7 @@ public class ApiV1MemberController {
     @AllArgsConstructor
     @Getter
     public static class MemberJoinRespBody {
-        Member item;
+        MemberDto item;
     }
     // POST /api/v1/members
     @PostMapping("")
@@ -45,7 +46,11 @@ public class ApiV1MemberController {
         RsData<Member> joinRs = memberService.join(requestBody.username, requestBody.password, requestBody.nickname);
 
         return joinRs.newDataOf(
-                new MemberJoinRespBody(joinRs.getData())
+                new MemberJoinRespBody(
+                        new MemberDto(
+                                joinRs.getData()
+                        )
+                )
         );
     }
 
