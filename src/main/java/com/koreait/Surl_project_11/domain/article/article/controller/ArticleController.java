@@ -4,12 +4,14 @@ import com.koreait.Surl_project_11.domain.article.article.entity.Article;
 import com.koreait.Surl_project_11.domain.article.article.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 @Controller
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ArticleController {
     private final ArticleService articleService;
     @GetMapping("/article/list")
