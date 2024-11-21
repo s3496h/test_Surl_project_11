@@ -7,6 +7,7 @@ import com.koreait.Surl_project_11.domain.surl.surl.service.SurlService;
 import com.koreait.Surl_project_11.grobal.eceptions.GlobalException;
 import com.koreait.Surl_project_11.grobal.rq.Rq;
 import com.koreait.Surl_project_11.grobal.rsData.RsData;
+import com.koreait.Surl_project_11.standard.dto.Empty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -68,5 +69,14 @@ public class ApiV1SurlController {
                         new SurlDto(surl)
                 )
         );
+    }
+    @DeleteMapping("/{id}")
+    @Transactional
+    public RsData<Empty> delete(
+            @PathVariable long id
+    ) {
+        Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
+        surlService.delete(surl);
+        return RsData.OK;
     }
 }
