@@ -1,5 +1,6 @@
 package com.koreait.Surl_project_11.domain.surl.surl.controller;
 
+import com.koreait.Surl_project_11.domain.auth.auth.service.AuthService;
 import com.koreait.Surl_project_11.domain.member.entity.Member;
 import com.koreait.Surl_project_11.domain.surl.surl.dto.SurlDto;
 import com.koreait.Surl_project_11.domain.surl.surl.entity.Surl;
@@ -27,6 +28,7 @@ import java.util.List;
 public class ApiV1SurlController {
     private final Rq rq;
     private final SurlService surlService;
+    private final AuthService authService;
 
     @AllArgsConstructor
     @Getter
@@ -73,11 +75,7 @@ public class ApiV1SurlController {
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
 
-        Member member = rq.getMember();
-        if (!surl.getAuthor().equals(member)) {
-            throw new GlobalException("403-1", "권한이 없어");
-        }
-
+        authService.checkCanGetSurl(rq.getMember(), surl);
 
         return RsData.of(
                 new SurlGetRespBody(
@@ -114,10 +112,7 @@ public class ApiV1SurlController {
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
 
-        Member member = rq.getMember();
-        if (!surl.getAuthor().equals(member)) {
-            throw new GlobalException("403-1", "권한이 없어");
-        }
+        authService.checkCanGetSurl(rq.getMember(), surl);
 
         surlService.delete(surl);
         return RsData.OK;
@@ -145,11 +140,8 @@ public class ApiV1SurlController {
             @RequestBody @Valid SurlModifyReqBody reqBody
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
-        Member member = rq.getMember();
-        if (!surl.getAuthor().equals(member)) {
-//        if (surl.getAuthor().getId() != member.getId()) {
-            throw new GlobalException("403-1", "권한이 없어");
-        }
+
+        authService.checkCanGetSurl(rq.getMember(), surl);
 
         RsData<Surl> modifyRs = surlService.modify(surl, reqBody.body, reqBody.url);
         return modifyRs.newDataOf(
