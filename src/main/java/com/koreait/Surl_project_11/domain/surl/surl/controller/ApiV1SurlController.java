@@ -27,6 +27,7 @@ import java.util.List;
 public class ApiV1SurlController {
     private final Rq rq;
     private final SurlService surlService;
+
     @AllArgsConstructor
     @Getter
     public static class SurlAddReqBody {
@@ -35,11 +36,13 @@ public class ApiV1SurlController {
         @NotBlank
         private String url;
     }
+
     @AllArgsConstructor
     @Getter
     public static class SurlAddRespBody {
         private SurlDto item;
     }
+
     @PostMapping("")
     @ResponseBody
     @Transactional
@@ -54,11 +57,13 @@ public class ApiV1SurlController {
                 )
         );
     }
+
     @AllArgsConstructor
     @Getter
     public static class SurlGetRespBody {
         private SurlDto item;
     }
+
     // /api/v1/surls/{id}
     // /api/v1/surls/1
     // /api/v1/surls?id=1
@@ -67,6 +72,13 @@ public class ApiV1SurlController {
             @PathVariable long id
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        Member member = rq.getMember();
+        if (!surl.getAuthor().equals(member)) {
+            throw new GlobalException("403-1", "권한이 없어");
+        }
+
+
         return RsData.of(
                 new SurlGetRespBody(
                         new SurlDto(surl)
@@ -79,6 +91,7 @@ public class ApiV1SurlController {
     public static class SurlGetItemsRespBody {
         private List<SurlDto> items;
     }
+
     @GetMapping("")
     public RsData<SurlGetItemsRespBody> getItems() {
         Member member = rq.getMember();
@@ -100,6 +113,12 @@ public class ApiV1SurlController {
             @PathVariable long id
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        Member member = rq.getMember();
+        if (!surl.getAuthor().equals(member)) {
+            throw new GlobalException("403-1", "권한이 없어");
+        }
+
         surlService.delete(surl);
         return RsData.OK;
     }
@@ -112,11 +131,13 @@ public class ApiV1SurlController {
         @NotBlank
         private String url;
     }
+
     @AllArgsConstructor
     @Getter
     public static class SurlModifyRespBody {
         private SurlDto item;
     }
+
     @PutMapping("/{id}")
     @Transactional
     public RsData<SurlModifyRespBody> modify(
@@ -124,6 +145,12 @@ public class ApiV1SurlController {
             @RequestBody @Valid SurlModifyReqBody reqBody
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
+        Member member = rq.getMember();
+        if (!surl.getAuthor().equals(member)) {
+//        if (surl.getAuthor().getId() != member.getId()) {
+            throw new GlobalException("403-1", "권한이 없어");
+        }
+
         RsData<Surl> modifyRs = surlService.modify(surl, reqBody.body, reqBody.url);
         return modifyRs.newDataOf(
                 new SurlModifyRespBody(
