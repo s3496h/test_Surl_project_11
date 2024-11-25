@@ -16,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/surls")
 @RequiredArgsConstructor
@@ -70,6 +73,27 @@ public class ApiV1SurlController {
                 )
         );
     }
+
+    @AllArgsConstructor
+    @Getter
+    public static class SurlGetItemsRespBody {
+        private List<SurlDto> items;
+    }
+    @GetMapping("")
+    public RsData<SurlGetItemsRespBody> getItems() {
+        Member member = rq.getMember();
+        List<Surl> surls = surlService.findByAuthorOrderByIdDesc(member);
+        // Page
+        // QueryDSL
+        return RsData.of(
+                new SurlGetItemsRespBody(
+                        surls.stream()
+                                .map(SurlDto::new)
+                                .toList()
+                )
+        );
+    }
+
     @DeleteMapping("/{id}")
     @Transactional
     public RsData<Empty> delete(
