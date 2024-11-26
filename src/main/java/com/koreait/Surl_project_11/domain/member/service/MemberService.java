@@ -5,6 +5,7 @@ import com.koreait.Surl_project_11.domain.member.repository.MemberRepository;
 import com.koreait.Surl_project_11.grobal.eceptions.GlobalException;
 import com.koreait.Surl_project_11.grobal.rsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Transactional
@@ -31,7 +33,7 @@ public class MemberService {
 
         Member member = Member.builder()
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .nickname(nickname)
                 .build();
         memberRepository.save(member);
