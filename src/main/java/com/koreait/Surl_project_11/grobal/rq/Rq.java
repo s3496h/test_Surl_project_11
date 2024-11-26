@@ -2,11 +2,11 @@ package com.koreait.Surl_project_11.grobal.rq;
 
 import com.koreait.Surl_project_11.domain.member.entity.Member;
 import com.koreait.Surl_project_11.domain.member.service.MemberService;
+import com.koreait.Surl_project_11.grobal.eceptions.GlobalException;
+import com.koreait.Surl_project_11.standard.util.Ut;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -18,15 +18,20 @@ public class Rq {
     private final HttpServletResponse resp;
     private final MemberService memberService;
 
-    @Getter
-    @Setter
-    private Member member;
-    //    public Member getMember() {
-//        return memberService.getReferenceById(3L); // user1
-//    }
+//    @Getter
+//    @Setter
+//    private Member member;
+
+    public Member getMember() {
+        String actorUsername = req.getParameter("actorUsername");
+        if (Ut.str.isBlank(actorUsername)) throw new GlobalException("401-1", "인증정보 입력해줘");
+        Member loginedMember = memberService.findByUsername(actorUsername).orElseThrow(() -> new GlobalException("401-2", "인증 정보가 올바르지 않아"));
+        return loginedMember;
+    }
     public String getCurrentUrlPath() {
         return req.getRequestURI();
     }
+
     public void setStatusCode(int statusCode) {
         resp.setStatus(statusCode);
     }
