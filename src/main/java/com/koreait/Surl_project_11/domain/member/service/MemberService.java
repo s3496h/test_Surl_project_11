@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class MemberService {
         Member member = Member.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
+                .apiKey(UUID.randomUUID().toString())
                 .nickname(nickname)
                 .build();
         memberRepository.save(member);
@@ -50,5 +52,8 @@ public class MemberService {
     }
     public Optional<Member> findById(long id) {
         return memberRepository.findById(id);
+    }
+    public Optional<Member> findByApiKey(String apiKey) {
+        return memberRepository.findByApiKey(apiKey);
     }
 }

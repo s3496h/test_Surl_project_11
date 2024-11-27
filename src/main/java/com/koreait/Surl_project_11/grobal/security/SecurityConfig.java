@@ -1,14 +1,15 @@
 package com.koreait.Surl_project_11.grobal.security;
 
 import com.koreait.Surl_project_11.grobal.rsData.RsData;
+import com.koreait.Surl_project_11.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.koreait.Surl_project_11.standard.util.Ut;
 
 @Configuration
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
+                                .requestMatchers(HttpMethod.POST, "/api/*/members", "/api/*/members/login").permitAll()
                                 .requestMatchers("/h2-console/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest().authenticated()
@@ -47,7 +49,7 @@ public class SecurityConfig {
                                     response.setStatus(403);
                                     response.getWriter().write(
                                             Ut.json.toString(
-                                                    RsData.of("403-1",request.getRequestURI() + ", " + authException.getLocalizedMessage())
+                                                    RsData.of("403-1", request.getRequestURI() + ", " + authException.getLocalizedMessage())
                                             )
                                     );
                                 }
