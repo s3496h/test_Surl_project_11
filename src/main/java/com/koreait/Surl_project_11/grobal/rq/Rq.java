@@ -23,18 +23,13 @@ public class Rq {
 
     private Member member;
 
-    //   @Getter
-    //   @Setter
-    //  private Member member;
-
     public Member getMember() {
         if (member != null) return member; // 메모리 캐싱
 
         String actorUsername = getCookieValue("actorUsername", null);
         String actorPassword = getCookieValue("actorPassword", null);
 
-//        String actorUsername = req.getParameter("actorUsername");
-//        String actorPassword = req.getParameter("actorPassword");
+
 
         if (actorUsername == null || actorPassword == null) {
             String authorization = req.getHeader("Authorization");
@@ -46,8 +41,6 @@ public class Rq {
             }
         }
 
-//        if (actorUsername == null) actorUsername = req.getHeader("actorUsername");
-//        if (actorPassword == null) actorPassword = req.getHeader("actorPassword");
 
         if (Ut.str.isBlank(actorUsername)) throw new GlobalException("401-1", "인증정보(아이디) 입력해줘");
         if (Ut.str.isBlank(actorPassword)) throw new GlobalException("401-2", "인증정보(비밀번호) 입력해줘");
@@ -69,7 +62,7 @@ public class Rq {
         resp.setStatus(statusCode);
     }
 
-    private String getCookieValue(String cookieName, String defaultValue) {
+    public String getCookieValue(String cookieName, String defaultValue) {
         if (req.getCookies() == null) return defaultValue;
         return Arrays.stream(req.getCookies()) // 쿠키 배열을 스트림으로 변환
                 .filter(cookie -> cookie.getName().equals(cookieName))// 쿠키의 이름이 매개변수로 쓰이게
