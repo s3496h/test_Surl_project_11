@@ -56,6 +56,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         User user = new User(loginedMember.getUsername(), "", List.of());
         Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        filterChain.doFilter(req, resp);
+        filterChain.doFilter(req, resp);//필터를 종료하고 다음턴으로 넘긴다.
     }
 }
