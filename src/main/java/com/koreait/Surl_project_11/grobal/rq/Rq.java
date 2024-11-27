@@ -2,12 +2,11 @@ package com.koreait.Surl_project_11.grobal.rq;
 
 import com.koreait.Surl_project_11.domain.member.entity.Member;
 import com.koreait.Surl_project_11.domain.member.service.MemberService;
-import com.koreait.Surl_project_11.grobal.eceptions.GlobalException;
-import com.koreait.Surl_project_11.standard.util.Ut;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -26,32 +25,11 @@ public class Rq {
     public Member getMember() {
         if (member != null) return member; // 메모리 캐싱
 
-        String actorUsername = getCookieValue("actorUsername", null);
-        String actorPassword = getCookieValue("actorPassword", null);
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
 
+        member = memberService.findByUsername(name).get();
 
-
-        if (actorUsername == null || actorPassword == null) {
-            String authorization = req.getHeader("Authorization");
-            if (authorization != null) {
-                authorization = authorization.substring("bearer ".length());
-                String[] authorizationBits = authorization.split(" ", 2);
-                actorUsername = authorizationBits[0];
-                actorPassword = authorizationBits.length == 2 ? authorizationBits[1] : null;
-            }
-        }
-
-
-        if (Ut.str.isBlank(actorUsername)) throw new GlobalException("401-1", "인증정보(아이디) 입력해줘");
-        if (Ut.str.isBlank(actorPassword)) throw new GlobalException("401-2", "인증정보(비밀번호) 입력해줘");
-
-        Member loginedMember = memberService.findByUsername(actorUsername).orElseThrow(() -> new GlobalException("403-3", "해당 회원은 없어"));
-        if (!memberService.matchPassword(actorPassword, loginedMember.getPassword()))
-            throw new GlobalException("403-4", "비밀번호 틀림");
-
-        member = loginedMember;
-
-        return loginedMember;
+        return member;
     }
 
     public String getCurrentUrlPath() {
