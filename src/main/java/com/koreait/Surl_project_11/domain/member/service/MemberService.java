@@ -48,4 +48,7 @@ public class MemberService {
     public boolean matchPassword(String password, String encodedPassword) {
         return passwordEncoder.matches(password, encodedPassword);
     }
+    public Optional<Member> findById(long id) {
+        return memberRepository.findById(id);
+    }
 }
