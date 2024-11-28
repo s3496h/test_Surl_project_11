@@ -5,7 +5,6 @@ import com.koreait.Surl_project_11.domain.auth.auth.service.AuthTokenService;
 import com.koreait.Surl_project_11.domain.member.dto.MemberDto;
 import com.koreait.Surl_project_11.domain.member.entity.Member;
 import com.koreait.Surl_project_11.domain.member.service.MemberService;
-import com.koreait.Surl_project_11.grobal.app.AppConfig;
 import com.koreait.Surl_project_11.grobal.eceptions.GlobalException;
 import com.koreait.Surl_project_11.grobal.rq.Rq;
 import com.koreait.Surl_project_11.grobal.rsData.RsData;
@@ -29,7 +28,6 @@ public class ApiV1MemberController {
     private final Rq rq;
     private final AuthService authService;
     private final AuthTokenService authTokenService;
-
     @AllArgsConstructor
     @Getter
     public static class MemberJoinReqBody {
@@ -86,8 +84,6 @@ public class ApiV1MemberController {
         if (!memberService.matchPassword(requestBody.password, member.getPassword())) {
             throw new GlobalException("401-2", "비번 틀림");
         }
-        String accessToken = authTokenService.genToken(member, AppConfig.getAccessTokenExpirationSec());
-        rq.setCookie("accessToken", accessToken);
         rq.setCookie("apiKey", member.getApiKey());
         return RsData.of(
                 "200-1", "로그인 성공", new MemberLoginRespBody(new MemberDto(member))

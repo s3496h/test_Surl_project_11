@@ -1,6 +1,6 @@
 package com.koreait.Surl_project_11.grobal.security;
 
-import com.koreait.Surl_project_11.domain.member.entity.Member;
+import com.koreait.Surl_project_11.domain.auth.auth.service.AuthTokenService;
 import com.koreait.Surl_project_11.domain.member.service.MemberService;
 import com.koreait.Surl_project_11.grobal.rq.Rq;
 import com.koreait.Surl_project_11.standard.util.Ut;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -26,28 +27,34 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     private final MemberService memberService;
     private final Rq rq;
+    private final AuthTokenService authTokenService;
+
+
     @Override
     @SneakyThrows
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) {
-        String apiKey = rq.getCookieValue("apiKey", null);
-        if (apiKey == null) {
+        String accessToken = rq.getCookieValue("accessToken", null);
+
+        if (accessToken == null) {
             String authorization = req.getHeader("Authorization");
             if (authorization != null) {
-                apiKey = authorization.substring("bearer ".length());
+                accessToken = authorization.substring("bearer ".length());
             }
         }
-        if (Ut.str.isBlank(apiKey)) {
+        if (Ut.str.isBlank(accessToken)) {
             filterChain.doFilter(req, resp);
             return;
         }
-        Member loginedMember = memberService.findByApiKey(apiKey).orElse(null);
-        if (loginedMember == null) {
+        if (!authTokenService.validateToken(accessToken)) {
             filterChain.doFilter(req, resp);
             return;
         }
-        User user = new User(loginedMember.getId() + "", "", List.of());
+
+        Map<String, Object> accessTokenData = authTokenService.getDataFrom(accessToken);
+        long id = (int) accessTokenData.get("id");
+        User user = new User(id+ "", "", List.of());
         Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        filterChain.doFilter(req, resp);//필터를 종료하고 다음턴으로 넘긴다.
+        filterChain.doFilter(req, resp);
     }
 }
