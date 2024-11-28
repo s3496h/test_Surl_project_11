@@ -37,4 +37,7 @@ logging:
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
 custom:
-  site:z
+  site:
+   name: "My Site"
+  accessToken:
+   expirationSec: 60
