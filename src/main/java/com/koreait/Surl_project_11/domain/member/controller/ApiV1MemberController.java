@@ -84,7 +84,7 @@ public class ApiV1MemberController {
         if (!memberService.matchPassword(requestBody.password, member.getPassword())) {
             throw new GlobalException("401-2", "비번 틀림");
         }
-        rq.setCookie("apiKey", member.getApiKey());
+        rq.setCookie("refreshToken", member.getRefreshToken());
         return RsData.of(
                 "200-1", "로그인 성공", new MemberLoginRespBody(new MemberDto(member))
         );
