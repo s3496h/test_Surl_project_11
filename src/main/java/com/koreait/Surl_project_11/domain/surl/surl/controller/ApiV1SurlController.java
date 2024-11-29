@@ -10,6 +10,7 @@ import com.koreait.Surl_project_11.grobal.eceptions.GlobalException;
 import com.koreait.Surl_project_11.grobal.rq.Rq;
 import com.koreait.Surl_project_11.grobal.rsData.RsData;
 import com.koreait.Surl_project_11.standard.dto.Empty;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/surls")
+//@RequestMapping(value = "/api/v1/surls", produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
@@ -50,6 +52,7 @@ public class ApiV1SurlController {
     @PostMapping("")
     @ResponseBody
     @Transactional
+    @Operation(summary = "생성")
     public RsData<SurlAddRespBody> add(
             @RequestBody @Valid SurlAddReqBody reqBody
     ) {
@@ -72,6 +75,7 @@ public class ApiV1SurlController {
     // /api/v1/surls/1
     // /api/v1/surls?id=1
     @GetMapping("/{id}")
+    @Operation(summary = "단건조회")
     public RsData<SurlGetRespBody> get(
             @PathVariable long id
     ) {
@@ -93,6 +97,7 @@ public class ApiV1SurlController {
     }
 
     @GetMapping("")
+    @Operation(summary = "다건조회")
     public RsData<SurlGetItemsRespBody> getItems() {
 
         Member member = rq.getMember();
@@ -110,6 +115,7 @@ public class ApiV1SurlController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @Operation(summary = "삭제")
     public RsData<Empty> delete(
             @PathVariable long id
     ) {
@@ -142,6 +148,7 @@ public class ApiV1SurlController {
 
     @PutMapping("/{id}")
     @Transactional
+    @Operation(summary = "수정")
     public RsData<SurlModifyRespBody> modify(
             @PathVariable long id,
             @RequestBody @Valid SurlModifyReqBody reqBody

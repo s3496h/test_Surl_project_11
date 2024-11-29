@@ -9,6 +9,8 @@ import com.koreait.Surl_project_11.grobal.eceptions.GlobalException;
 import com.koreait.Surl_project_11.grobal.rq.Rq;
 import com.koreait.Surl_project_11.grobal.rsData.RsData;
 import com.koreait.Surl_project_11.standard.dto.Empty;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
+//@RequestMapping(value = "/api/v1/members", produces = APPLICATION_JSON_VALUE)
+@Tag(name = "ApiMemberController", description = "회원 CRUD 컨트롤러")
 public class ApiV1MemberController {
     private final MemberService memberService;
     private final Rq rq;
@@ -48,6 +52,7 @@ public class ApiV1MemberController {
     // POST /api/v1/members
     @PostMapping("")
     @Transactional
+    @Operation(summary = "회원가입")
     public RsData<MemberJoinRespBody> join(
             @RequestBody @Valid MemberJoinReqBody requestBody
     ) {
@@ -77,6 +82,7 @@ public class ApiV1MemberController {
     }
     @PostMapping("/login")
     @Transactional
+    @Operation(summary = "로그인", description = "성공하면 accessToken, refreshToken 쿠키가 생성됨")
     public RsData<MemberLoginRespBody> login(
             @RequestBody @Valid MemberLoginReqBody requestBody
     ) {
@@ -91,6 +97,7 @@ public class ApiV1MemberController {
     }
     @DeleteMapping("/logout")
     @Transactional
+    @Operation(summary = "로그아웃")
     public RsData<Empty> logout() {
         // 쿠키 삭제
         rq.removeCookie("actorUsername");
